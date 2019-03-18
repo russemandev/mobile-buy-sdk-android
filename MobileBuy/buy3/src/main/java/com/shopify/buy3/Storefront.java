@@ -609,6 +609,19 @@ public class Storefront {
         }
 
         /**
+        * The article’s SEO information.
+        */
+        public ArticleQuery seo(SEOQueryDefinition queryDef) {
+            startField("seo");
+
+            _queryBuilder.append('{');
+            queryDef.define(new SEOQuery(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * A categorization that a article can be tagged with.
         */
         public ArticleQuery tags() {
@@ -733,6 +746,17 @@ public class Storefront {
 
                     case "publishedAt": {
                         responseData.put(key, Utils.parseDateTime(jsonAsString(field.getValue(), key)));
+
+                        break;
+                    }
+
+                    case "seo": {
+                        SEO optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new SEO(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -934,6 +958,19 @@ public class Storefront {
         }
 
         /**
+        * The article’s SEO information.
+        */
+
+        public SEO getSeo() {
+            return (SEO) get("seo");
+        }
+
+        public Article setSeo(SEO arg) {
+            optimisticData.put(getKey("seo"), arg);
+            return this;
+        }
+
+        /**
         * A categorization that a article can be tagged with.
         */
 
@@ -997,6 +1034,8 @@ public class Storefront {
                 case "image": return true;
 
                 case "publishedAt": return false;
+
+                case "seo": return true;
 
                 case "tags": return false;
 
@@ -15662,6 +15701,11 @@ public class Storefront {
         BIF,
 
         /**
+        * Bermudian Dollar (BMD).
+        */
+        BMD,
+
+        /**
         * Brunei Dollar (BND).
         */
         BND,
@@ -16353,6 +16397,10 @@ public class Storefront {
                     return BIF;
                 }
 
+                case "BMD": {
+                    return BMD;
+                }
+
                 case "BND": {
                     return BND;
                 }
@@ -16918,6 +16966,10 @@ public class Storefront {
 
                 case BIF: {
                     return "BIF";
+                }
+
+                case BMD: {
+                    return "BMD";
                 }
 
                 case BND: {
@@ -35647,6 +35699,123 @@ public class Storefront {
                 }
             }
 
+            public interface SEOQueryDefinition {
+                void define(SEOQuery _queryBuilder);
+            }
+
+            /**
+            * SEO information.
+            */
+            public static class SEOQuery extends Query<SEOQuery> {
+                SEOQuery(StringBuilder _queryBuilder) {
+                    super(_queryBuilder);
+                }
+
+                /**
+                * The meta description.
+                */
+                public SEOQuery description() {
+                    startField("description");
+
+                    return this;
+                }
+
+                /**
+                * The SEO title.
+                */
+                public SEOQuery title() {
+                    startField("title");
+
+                    return this;
+                }
+            }
+
+            /**
+            * SEO information.
+            */
+            public static class SEO extends AbstractResponse<SEO> {
+                public SEO() {
+                }
+
+                public SEO(JsonObject fields) throws SchemaViolationError {
+                    for (Map.Entry<String, JsonElement> field : fields.entrySet()) {
+                        String key = field.getKey();
+                        String fieldName = getFieldName(key);
+                        switch (fieldName) {
+                            case "description": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "title": {
+                                String optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = jsonAsString(field.getValue(), key);
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
+                            case "__typename": {
+                                responseData.put(key, jsonAsString(field.getValue(), key));
+                                break;
+                            }
+                            default: {
+                                throw new SchemaViolationError(this, key, field.getValue());
+                            }
+                        }
+                    }
+                }
+
+                public String getGraphQlTypeName() {
+                    return "SEO";
+                }
+
+                /**
+                * The meta description.
+                */
+
+                public String getDescription() {
+                    return (String) get("description");
+                }
+
+                public SEO setDescription(String arg) {
+                    optimisticData.put(getKey("description"), arg);
+                    return this;
+                }
+
+                /**
+                * The SEO title.
+                */
+
+                public String getTitle() {
+                    return (String) get("title");
+                }
+
+                public SEO setTitle(String arg) {
+                    optimisticData.put(getKey("title"), arg);
+                    return this;
+                }
+
+                public boolean unwrapsToObject(String key) {
+                    switch (getFieldName(key)) {
+                        case "description": return false;
+
+                        case "title": return false;
+
+                        default: return false;
+                    }
+                }
+            }
+
             public interface ScriptDiscountApplicationQueryDefinition {
                 void define(ScriptDiscountApplicationQuery _queryBuilder);
             }
@@ -38122,8 +38291,11 @@ public class Storefront {
                 }
 
                 /**
-                * The status of the transaction
+                * The status of the transaction.
+                *
+                * @deprecated Use `statusV2` instead
                 */
+                @Deprecated
                 public TransactionQuery status() {
                     startField("status");
 
@@ -38131,7 +38303,16 @@ public class Storefront {
                 }
 
                 /**
-                * Whether the transaction was done in test mode or not
+                * The status of the transaction.
+                */
+                public TransactionQuery statusV2() {
+                    startField("statusV2");
+
+                    return this;
+                }
+
+                /**
+                * Whether the transaction was done in test mode or not.
                 */
                 public TransactionQuery test() {
                     startField("test");
@@ -38166,6 +38347,17 @@ public class Storefront {
 
                             case "status": {
                                 responseData.put(key, TransactionStatus.fromGraphQl(jsonAsString(field.getValue(), key)));
+
+                                break;
+                            }
+
+                            case "statusV2": {
+                                TransactionStatus optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = TransactionStatus.fromGraphQl(jsonAsString(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
 
                                 break;
                             }
@@ -38218,7 +38410,9 @@ public class Storefront {
                 }
 
                 /**
-                * The status of the transaction
+                * The status of the transaction.
+                *
+                * @deprecated Use `statusV2` instead
                 */
 
                 public TransactionStatus getStatus() {
@@ -38231,7 +38425,20 @@ public class Storefront {
                 }
 
                 /**
-                * Whether the transaction was done in test mode or not
+                * The status of the transaction.
+                */
+
+                public TransactionStatus getStatusV2() {
+                    return (TransactionStatus) get("statusV2");
+                }
+
+                public Transaction setStatusV2(TransactionStatus arg) {
+                    optimisticData.put(getKey("statusV2"), arg);
+                    return this;
+                }
+
+                /**
+                * Whether the transaction was done in test mode or not.
                 */
 
                 public Boolean getTest() {
@@ -38250,6 +38457,8 @@ public class Storefront {
                         case "kind": return false;
 
                         case "status": return false;
+
+                        case "statusV2": return false;
 
                         case "test": return false;
 
