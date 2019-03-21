@@ -11,6 +11,7 @@ android:
     - android-28
     - extra-google-m2repository
     - extra-android-support
+    - sys-img-x86-android-28
   licenses:
     - 'android-sdk-license-.+'
     - '.+'
@@ -44,7 +45,7 @@ before_script:
 
 script:
   - ./gradlew clean build connectedCheck -x :sample:build -x :sample:connectedCheck -PdisablePreDex --console=plain
-  - ./gradlew clean :sample:assembleShopifyDebug -PdisablePreDex --console=plain 
+  - ./gradlew clean :sample:assembleShopifyDebug -PdisablePreDex --console=plain
   - ./gradlew clean :sample:assembleXApolloDebug -PdisablePreDex --console=plain
 
 before_cache:
