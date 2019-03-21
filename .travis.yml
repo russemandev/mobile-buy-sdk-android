@@ -11,7 +11,7 @@ android:
     - android-28
     - extra-google-m2repository
     - extra-android-support
-    - sys-img-x86-android-28
+    - sys-img-armeabi-v7a-android-19
   licenses:
     - 'android-sdk-license-.+'
     - '.+'
