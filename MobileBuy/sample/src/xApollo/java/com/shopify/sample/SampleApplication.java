@@ -24,6 +24,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 
+private val STOREFRONT_API_VERSION = "2019-07"
+
 public class SampleApplication extends BaseApplication {
 
   private static final String SHOP_PROPERTIES_INSTRUCTION =
@@ -73,7 +75,7 @@ public class SampleApplication extends BaseApplication {
 
     apolloClient = ApolloClient.builder()
       .okHttpClient(httpClient)
-      .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/graphql"))
+      .serverUrl(HttpUrl.parse("https://" + shopUrl + "/api/" + STOREFRONT_API_VERSION + "/graphql"))
       .httpCache(new ApolloHttpCache(new DiskLruHttpCacheStore(getCacheDir(), 1000 * 1024), null))
       .defaultHttpCachePolicy(HttpCachePolicy.CACHE_FIRST.expireAfter(20, TimeUnit.MINUTES))
       .addCustomTypeAdapter(CustomType.MONEY, new CustomTypeAdapter<BigDecimal>() {
