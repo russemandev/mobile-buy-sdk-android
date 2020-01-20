@@ -178,7 +178,7 @@ class GraphClient private constructor(
          *
          * @return configured [GraphClient]
          */
-        fun build(): GraphClient {
+        fun build(locale: String? = null): GraphClient {
             val httpCache = httpCacheConfig.let { config ->
                 when (config) {
                     is HttpCacheConfig.DiskLru -> {
@@ -199,8 +199,9 @@ class GraphClient private constructor(
             }
 
             val okHttpClient = httpClient.withSdkHeaderInterceptor(
-                applicationName = applicationName,
-                accessToken = accessToken
+                    applicationName = applicationName,
+                    accessToken = accessToken,
+                    locale = locale
             ).withHttpCacheInterceptor(httpCache)
 
             return GraphClient(
@@ -257,7 +258,7 @@ private fun OkHttpClient.withHttpCacheInterceptor(httpCache: HttpCache?): OkHttp
     }
 }
 
-private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, accessToken: String): OkHttpClient {
+private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, accessToken: String, locale: String?): OkHttpClient {
     return newBuilder().addInterceptor { chain ->
         val original = chain.request()
         val builder = original.newBuilder().method(original.method(), original.body())
@@ -265,6 +266,7 @@ private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, acces
         builder.header("X-SDK-Version", BuildConfig.VERSION_NAME)
         builder.header("X-SDK-Variant", "android")
         builder.header("X-Shopify-Storefront-Access-Token", accessToken)
+        builder.header("Accept-Language", locale!!)
         chain.proceed(builder.build())
     }.build()
 }
