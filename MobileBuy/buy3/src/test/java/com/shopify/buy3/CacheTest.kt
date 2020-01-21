@@ -80,16 +80,18 @@ class CacheTest {
             .build()
 
         graphClient = GraphClient.build(
-            context = mockContext,
-            shopDomain = SHOP_DOMAIN,
-            accessToken = ACCESS_TOKEN
-        ) {
-            httpClient = okHttpClient
-            endpointUrl = server.url(SHOP_DOMAIN)
-            httpCache(DiskLruCacheStore(inMemoryFileSystem, File("/cache/"), Integer.MAX_VALUE.toLong())) {
-                defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-            }
-        }
+                context = mockContext,
+                shopDomain = SHOP_DOMAIN,
+                accessToken = ACCESS_TOKEN,
+                configure = {
+                    httpClient = okHttpClient
+                    endpointUrl = server.url(SHOP_DOMAIN)
+                    httpCache(DiskLruCacheStore(inMemoryFileSystem, File("/cache/"), Integer.MAX_VALUE.toLong())) {
+                        defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
+                    }
+                },
+                locale =
+        )
     }
 
     @After fun tearDown() {
@@ -303,16 +305,18 @@ class CacheTest {
 
     @Test fun fileSystemUnavailable() {
         val graphClient = GraphClient.build(
-            context = mockContext,
-            shopDomain = SHOP_DOMAIN,
-            accessToken = ACCESS_TOKEN
-        ) {
-            httpClient = okHttpClient
-            endpointUrl = server.url(SHOP_DOMAIN)
-            httpCache(DiskLruCacheStore(NoFileSystem(), File("/cache/"), Integer.MAX_VALUE.toLong())) {
-                defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-            }
-        }
+                context = mockContext,
+                shopDomain = SHOP_DOMAIN,
+                accessToken = ACCESS_TOKEN,
+                configure = {
+                    httpClient = okHttpClient
+                    endpointUrl = server.url(SHOP_DOMAIN)
+                    httpCache(DiskLruCacheStore(NoFileSystem(), File("/cache/"), Integer.MAX_VALUE.toLong())) {
+                        defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
+                    }
+                },
+                locale =
+        )
 
         server.enqueue(MockResponse().setChunkedBody(shopWithCollections, 32))
         graphClient.queryGraph(Storefront.query(ShopWithCollectionsQuery()))
@@ -335,16 +339,18 @@ class CacheTest {
         val faultyCacheStore = FaultyCacheStore(inMemoryFileSystem)
 
         val graphClient = GraphClient.build(
-            context = mockContext,
-            shopDomain = SHOP_DOMAIN,
-            accessToken = ACCESS_TOKEN
-        ) {
-            httpClient = okHttpClient
-            endpointUrl = server.url(SHOP_DOMAIN)
-            httpCache(faultyCacheStore) {
-                defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-            }
-        }
+                context = mockContext,
+                shopDomain = SHOP_DOMAIN,
+                accessToken = ACCESS_TOKEN,
+                configure = {
+                    httpClient = okHttpClient
+                    endpointUrl = server.url(SHOP_DOMAIN)
+                    httpCache(faultyCacheStore) {
+                        defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
+                    }
+                },
+                locale =
+        )
 
         server.enqueue(MockResponse().setChunkedBody(shopWithCollections, 32))
         faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.FAIL_HEADER_WRITE)
@@ -371,16 +377,18 @@ class CacheTest {
         val faultyCacheStore = FaultyCacheStore(inMemoryFileSystem)
 
         val graphClient = GraphClient.build(
-            context = mockContext,
-            shopDomain = SHOP_DOMAIN,
-            accessToken = ACCESS_TOKEN
-        ) {
-            httpClient = okHttpClient
-            endpointUrl = server.url(SHOP_DOMAIN)
-            httpCache(faultyCacheStore) {
-                defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
-            }
-        }
+                context = mockContext,
+                shopDomain = SHOP_DOMAIN,
+                accessToken = ACCESS_TOKEN,
+                configure = {
+                    httpClient = okHttpClient
+                    endpointUrl = server.url(SHOP_DOMAIN)
+                    httpCache(faultyCacheStore) {
+                        defaultCachePolicy = HttpCachePolicy.Default.NETWORK_FIRST
+                    }
+                },
+                locale =
+        )
 
         server.enqueue(MockResponse().setChunkedBody(shopWithCollections, 32))
         faultyCacheStore.failStrategy(FaultyCacheStore.FailStrategy.NO_FAIL)

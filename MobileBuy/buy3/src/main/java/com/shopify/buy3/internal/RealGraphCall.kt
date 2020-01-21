@@ -235,7 +235,7 @@ internal fun Call.Factory.newGraphQLHttpCall(
             .url(serverUrl)
             .post(body)
             .header(ACCEPT_HEADER_NAME, ACCEPT_HEADER)
-            .header(HTTP_CACHE_KEY_HEADER, cacheKey)
+            //.header(HTTP_CACHE_KEY_HEADER, cacheKey)
             .header(HTTP_CACHE_FETCH_STRATEGY_HEADER, httpCachePolicy.fetchStrategy.name)
             .header(HTTP_CACHE_EXPIRE_TIMEOUT_HEADER, cacheExpireTimeout.toString())
             .build()

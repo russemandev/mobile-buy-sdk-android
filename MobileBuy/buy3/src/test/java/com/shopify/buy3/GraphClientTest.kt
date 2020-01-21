@@ -59,10 +59,10 @@ class GraphClientTest {
             .connectTimeout(1, TimeUnit.SECONDS)
             .readTimeout(1, TimeUnit.SECONDS)
             .build()
-        graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken") {
+        graphClient = GraphClient.build(context = mockContext, shopDomain = "shopDomain", accessToken = "accessToken", configure = {
             httpClient = okHttpClient
             endpointUrl = server.url("/")
-        }
+        }, locale =)
     }
 
     @Test fun httpRequestHeaders() {

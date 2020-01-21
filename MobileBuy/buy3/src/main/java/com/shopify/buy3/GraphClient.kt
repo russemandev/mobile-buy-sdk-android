@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit
 
 private val DEFAULT_HTTP_CONNECTION_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(10)
 private val DEFAULT_HTTP_READ_WRITE_TIME_OUT_MS = TimeUnit.SECONDS.toMillis(20)
-private val STOREFRONT_API_VERSION = "2019-10"
+private val STOREFRONT_API_VERSION = "2020-01"
 
 @DslMarker
 annotation class GraphClientBuilder
@@ -119,16 +119,17 @@ class GraphClient private constructor(
          * @return [GraphClient.Config] client builder
          */
         fun build(
-            context: Context,
-            shopDomain: String,
-            accessToken: String,
-            configure: Config.() -> Unit = {}
+                context: Context,
+                shopDomain: String,
+                accessToken: String,
+                configure: Config.() -> Unit = {},
+                locale: String = ""
         ): GraphClient = Config.create(
             context = context,
             shopDomain = shopDomain,
             accessToken = accessToken,
             configure = configure
-        ).build()
+        ).build(locale)
     }
 
     /**
@@ -262,11 +263,12 @@ private fun OkHttpClient.withSdkHeaderInterceptor(applicationName: String, acces
     return newBuilder().addInterceptor { chain ->
         val original = chain.request()
         val builder = original.newBuilder().method(original.method(), original.body())
+        val usedLocale = locale ?: ""
         builder.header("User-Agent", "Mobile Buy SDK Android/" + BuildConfig.VERSION_NAME + "/" + applicationName)
         builder.header("X-SDK-Version", BuildConfig.VERSION_NAME)
         builder.header("X-SDK-Variant", "android")
         builder.header("X-Shopify-Storefront-Access-Token", accessToken)
-        builder.header("Accept-Language", locale!!)
+        builder.header("Accept-Language", usedLocale)
         chain.proceed(builder.build())
     }.build()
 }

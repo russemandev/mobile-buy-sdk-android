@@ -30,6 +30,9 @@ import com.shopify.buy3.HttpCachePolicy;
 import com.shopify.sample.domain.usecases.UseCases;
 import com.shopify.sample.domain.usecases.UseCasesImpl;
 import com.shopify.sample.util.CallbackExecutors;
+
+import org.jetbrains.annotations.NotNull;
+
 import kotlin.Unit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -85,6 +88,6 @@ public class SampleApplication extends BaseApplication {
             return Unit.INSTANCE;
           });
           return Unit.INSTANCE;
-        });
+        }, BuildConfig.DEFAULT_LOCALE);
   }
 }
