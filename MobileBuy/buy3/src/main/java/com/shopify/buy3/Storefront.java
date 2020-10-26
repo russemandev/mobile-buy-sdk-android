@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Storefront {
-    public static final String API_VERSION = "2020-10";
+    public static final String API_VERSION = "unstable";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         StringBuilder queryString = new StringBuilder("{");
@@ -3035,6 +3035,11 @@ public class Storefront {
         DISCOVER,
 
         /**
+        * Elo
+        */
+        ELO,
+
+        /**
         * JCB
         */
         JCB,
@@ -3043,6 +3048,11 @@ public class Storefront {
         * Mastercard
         */
         MASTERCARD,
+
+        /**
+        * UnionPay
+        */
+        UNIONPAY,
 
         /**
         * Visa
@@ -3069,12 +3079,20 @@ public class Storefront {
                     return DISCOVER;
                 }
 
+                case "ELO": {
+                    return ELO;
+                }
+
                 case "JCB": {
                     return JCB;
                 }
 
                 case "MASTERCARD": {
                     return MASTERCARD;
+                }
+
+                case "UNIONPAY": {
+                    return UNIONPAY;
                 }
 
                 case "VISA": {
@@ -3100,12 +3118,20 @@ public class Storefront {
                     return "DISCOVER";
                 }
 
+                case ELO: {
+                    return "ELO";
+                }
+
                 case JCB: {
                     return "JCB";
                 }
 
                 case MASTERCARD: {
                     return "MASTERCARD";
+                }
+
+                case UNIONPAY: {
+                    return "UNIONPAY";
                 }
 
                 case VISA: {
@@ -3580,6 +3606,19 @@ public class Storefront {
         }
 
         /**
+        * The sum of all the duties applied to the line items in the checkout.
+        */
+        public CheckoutQuery totalDuties(MoneyV2QueryDefinition queryDef) {
+            startField("totalDuties");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         *
         * @deprecated Use `totalPriceV2` instead
@@ -3872,6 +3911,17 @@ public class Storefront {
 
                     case "taxesIncluded": {
                         responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "totalDuties": {
+                        MoneyV2 optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -4280,6 +4330,19 @@ public class Storefront {
         }
 
         /**
+        * The sum of all the duties applied to the line items in the checkout.
+        */
+
+        public MoneyV2 getTotalDuties() {
+            return (MoneyV2) get("totalDuties");
+        }
+
+        public Checkout setTotalDuties(MoneyV2 arg) {
+            optimisticData.put(getKey("totalDuties"), arg);
+            return this;
+        }
+
+        /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         *
         * @deprecated Use `totalPriceV2` instead
@@ -4414,6 +4477,8 @@ public class Storefront {
                 case "taxExempt": return false;
 
                 case "taxesIncluded": return false;
+
+                case "totalDuties": return true;
 
                 case "totalPrice": return false;
 
@@ -16645,9 +16710,14 @@ public class Storefront {
         BWP,
 
         /**
+        * Belarusian Ruble (BYN).
+        */
+        BYN,
+
+        /**
         * Belarusian Ruble (BYR).
         *
-        * @deprecated `BYR` is deprecated. Use `BYN` available from version `2019-10` onwards instead.
+        * @deprecated `BYR` is deprecated. Use `BYN` available from version `2021-01` onwards instead.
         */
         @Deprecated
         BYR,
@@ -17420,6 +17490,10 @@ public class Storefront {
                     return BWP;
                 }
 
+                case "BYN": {
+                    return BYN;
+                }
+
                 case "BZD": {
                     return BZD;
                 }
@@ -18045,6 +18119,10 @@ public class Storefront {
 
                 case BWP: {
                     return "BWP";
+                }
+
+                case BYN: {
+                    return "BYN";
                 }
 
                 case BZD: {
@@ -28976,6 +29054,11 @@ public class Storefront {
     */
     public enum MetafieldValueType {
         /**
+        * A float metafield.
+        */
+        FLOAT,
+
+        /**
         * An integer metafield.
         */
         INTEGER,
@@ -28998,6 +29081,10 @@ public class Storefront {
             }
 
             switch (value) {
+                case "FLOAT": {
+                    return FLOAT;
+                }
+
                 case "INTEGER": {
                     return INTEGER;
                 }
@@ -29017,6 +29104,10 @@ public class Storefront {
         }
         public String toString() {
             switch (this) {
+                case FLOAT: {
+                    return "FLOAT";
+                }
+
                 case INTEGER: {
                     return "INTEGER";
                 }
@@ -32403,6 +32494,19 @@ public class Storefront {
                 }
 
                 /**
+                * The total cost of duties.
+                */
+                public OrderQuery currentTotalDuties(MoneyV2QueryDefinition queryDef) {
+                    startField("currentTotalDuties");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
                 * The total amount of the order, including duties, taxes and discounts, minus amounts for line items
                 * that have been removed.
                 */
@@ -32676,6 +32780,19 @@ public class Storefront {
                 */
                 public OrderQuery orderNumber() {
                     startField("orderNumber");
+
+                    return this;
+                }
+
+                /**
+                * The total of all duties applied to the order.
+                */
+                public OrderQuery originalTotalDuties(MoneyV2QueryDefinition queryDef) {
+                    startField("originalTotalDuties");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -32969,6 +33086,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "currentTotalDuties": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "currentTotalPrice": {
                                 responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
@@ -33063,6 +33191,17 @@ public class Storefront {
 
                             case "orderNumber": {
                                 responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "originalTotalDuties": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
 
                                 break;
                             }
@@ -33289,6 +33428,19 @@ public class Storefront {
                 }
 
                 /**
+                * The total cost of duties.
+                */
+
+                public MoneyV2 getCurrentTotalDuties() {
+                    return (MoneyV2) get("currentTotalDuties");
+                }
+
+                public Order setCurrentTotalDuties(MoneyV2 arg) {
+                    optimisticData.put(getKey("currentTotalDuties"), arg);
+                    return this;
+                }
+
+                /**
                 * The total amount of the order, including duties, taxes and discounts, minus amounts for line items
                 * that have been removed.
                 */
@@ -33451,6 +33603,19 @@ public class Storefront {
 
                 public Order setOrderNumber(Integer arg) {
                     optimisticData.put(getKey("orderNumber"), arg);
+                    return this;
+                }
+
+                /**
+                * The total of all duties applied to the order.
+                */
+
+                public MoneyV2 getOriginalTotalDuties() {
+                    return (MoneyV2) get("originalTotalDuties");
+                }
+
+                public Order setOriginalTotalDuties(MoneyV2 arg) {
+                    optimisticData.put(getKey("originalTotalDuties"), arg);
                     return this;
                 }
 
@@ -33699,6 +33864,8 @@ public class Storefront {
 
                         case "currentSubtotalPrice": return true;
 
+                        case "currentTotalDuties": return true;
+
                         case "currentTotalPrice": return true;
 
                         case "currentTotalTax": return true;
@@ -33724,6 +33891,8 @@ public class Storefront {
                         case "name": return false;
 
                         case "orderNumber": return false;
+
+                        case "originalTotalDuties": return true;
 
                         case "originalTotalPrice": return true;
 
@@ -34226,6 +34395,11 @@ public class Storefront {
                 RESTOCKED,
 
                 /**
+                * Displayed as **Scheduled**.
+                */
+                SCHEDULED,
+
+                /**
                 * Displayed as **Unfulfilled**.
                 */
                 UNFULFILLED,
@@ -34262,6 +34436,10 @@ public class Storefront {
                             return RESTOCKED;
                         }
 
+                        case "SCHEDULED": {
+                            return SCHEDULED;
+                        }
+
                         case "UNFULFILLED": {
                             return UNFULFILLED;
                         }
@@ -34295,6 +34473,10 @@ public class Storefront {
 
                         case RESTOCKED: {
                             return "RESTOCKED";
+                        }
+
+                        case SCHEDULED: {
+                            return "SCHEDULED";
                         }
 
                         case UNFULFILLED: {
