@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Storefront {
-    public static final String API_VERSION = "2021-01";
+    public static final String API_VERSION = "2021-04";
 
     public static QueryRootQuery query(QueryRootQueryDefinition queryDef) {
         StringBuilder queryString = new StringBuilder("{");
@@ -3643,6 +3643,19 @@ public class Storefront {
         }
 
         /**
+        * The sum of all the duties applied to the line items in the checkout.
+        */
+        public CheckoutQuery totalDuties(MoneyV2QueryDefinition queryDef) {
+            startField("totalDuties");
+
+            _queryBuilder.append('{');
+            queryDef.define(new MoneyV2Query(_queryBuilder));
+            _queryBuilder.append('}');
+
+            return this;
+        }
+
+        /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         *
         * @deprecated Use `totalPriceV2` instead
@@ -3935,6 +3948,17 @@ public class Storefront {
 
                     case "taxesIncluded": {
                         responseData.put(key, jsonAsBoolean(field.getValue(), key));
+
+                        break;
+                    }
+
+                    case "totalDuties": {
+                        MoneyV2 optional1 = null;
+                        if (!field.getValue().isJsonNull()) {
+                            optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                        }
+
+                        responseData.put(key, optional1);
 
                         break;
                     }
@@ -4343,6 +4367,19 @@ public class Storefront {
         }
 
         /**
+        * The sum of all the duties applied to the line items in the checkout.
+        */
+
+        public MoneyV2 getTotalDuties() {
+            return (MoneyV2) get("totalDuties");
+        }
+
+        public Checkout setTotalDuties(MoneyV2 arg) {
+            optimisticData.put(getKey("totalDuties"), arg);
+            return this;
+        }
+
+        /**
         * The sum of all the prices of all the items in the checkout, taxes and discounts included.
         *
         * @deprecated Use `totalPriceV2` instead
@@ -4477,6 +4514,8 @@ public class Storefront {
                 case "taxExempt": return false;
 
                 case "taxesIncluded": return false;
+
+                case "totalDuties": return true;
 
                 case "totalPrice": return false;
 
@@ -32627,7 +32666,7 @@ public class Storefront {
                 }
 
                 /**
-                * Represents the reason for the order's cancellation. Returns null if the order wasn't canceled.
+                * The reason for the order's cancellation. Returns `null` if the order wasn't canceled.
                 */
                 public OrderQuery cancelReason() {
                     startField("cancelReason");
@@ -32660,6 +32699,19 @@ public class Storefront {
                 */
                 public OrderQuery currentSubtotalPrice(MoneyV2QueryDefinition queryDef) {
                     startField("currentSubtotalPrice");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
+
+                    return this;
+                }
+
+                /**
+                * The total cost of duties for the order, including refunds.
+                */
+                public OrderQuery currentTotalDuties(MoneyV2QueryDefinition queryDef) {
+                    startField("currentTotalDuties");
 
                     _queryBuilder.append('{');
                     queryDef.define(new MoneyV2Query(_queryBuilder));
@@ -32942,6 +32994,19 @@ public class Storefront {
                 */
                 public OrderQuery orderNumber() {
                     startField("orderNumber");
+
+                    return this;
+                }
+
+                /**
+                * The total cost of duties charged at checkout.
+                */
+                public OrderQuery originalTotalDuties(MoneyV2QueryDefinition queryDef) {
+                    startField("originalTotalDuties");
+
+                    _queryBuilder.append('{');
+                    queryDef.define(new MoneyV2Query(_queryBuilder));
+                    _queryBuilder.append('}');
 
                     return this;
                 }
@@ -33235,6 +33300,17 @@ public class Storefront {
                                 break;
                             }
 
+                            case "currentTotalDuties": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
+
+                                break;
+                            }
+
                             case "currentTotalPrice": {
                                 responseData.put(key, new MoneyV2(jsonAsObject(field.getValue(), key)));
 
@@ -33329,6 +33405,17 @@ public class Storefront {
 
                             case "orderNumber": {
                                 responseData.put(key, jsonAsInteger(field.getValue(), key));
+
+                                break;
+                            }
+
+                            case "originalTotalDuties": {
+                                MoneyV2 optional1 = null;
+                                if (!field.getValue().isJsonNull()) {
+                                    optional1 = new MoneyV2(jsonAsObject(field.getValue(), key));
+                                }
+
+                                responseData.put(key, optional1);
 
                                 break;
                             }
@@ -33501,7 +33588,7 @@ public class Storefront {
                 }
 
                 /**
-                * Represents the reason for the order's cancellation. Returns null if the order wasn't canceled.
+                * The reason for the order's cancellation. Returns `null` if the order wasn't canceled.
                 */
 
                 public OrderCancelReason getCancelReason() {
@@ -33551,6 +33638,19 @@ public class Storefront {
 
                 public Order setCurrentSubtotalPrice(MoneyV2 arg) {
                     optimisticData.put(getKey("currentSubtotalPrice"), arg);
+                    return this;
+                }
+
+                /**
+                * The total cost of duties for the order, including refunds.
+                */
+
+                public MoneyV2 getCurrentTotalDuties() {
+                    return (MoneyV2) get("currentTotalDuties");
+                }
+
+                public Order setCurrentTotalDuties(MoneyV2 arg) {
+                    optimisticData.put(getKey("currentTotalDuties"), arg);
                     return this;
                 }
 
@@ -33717,6 +33817,19 @@ public class Storefront {
 
                 public Order setOrderNumber(Integer arg) {
                     optimisticData.put(getKey("orderNumber"), arg);
+                    return this;
+                }
+
+                /**
+                * The total cost of duties charged at checkout.
+                */
+
+                public MoneyV2 getOriginalTotalDuties() {
+                    return (MoneyV2) get("originalTotalDuties");
+                }
+
+                public Order setOriginalTotalDuties(MoneyV2 arg) {
+                    optimisticData.put(getKey("originalTotalDuties"), arg);
                     return this;
                 }
 
@@ -33965,6 +34078,8 @@ public class Storefront {
 
                         case "currentSubtotalPrice": return true;
 
+                        case "currentTotalDuties": return true;
+
                         case "currentTotalPrice": return true;
 
                         case "currentTotalTax": return true;
@@ -33990,6 +34105,8 @@ public class Storefront {
                         case "name": return false;
 
                         case "orderNumber": return false;
+
+                        case "originalTotalDuties": return true;
 
                         case "originalTotalPrice": return true;
 
@@ -37753,6 +37870,9 @@ public class Storefront {
 
                 /**
                 * The date and time when the product was last modified.
+                * A product's `updatedAt` value can change for different reasons. For example, if an order
+                * is placed for a product that has inventory tracking set up, then the inventory adjustment
+                * is counted as an update.
                 */
                 public ProductQuery updatedAt() {
                     startField("updatedAt");
@@ -38407,6 +38527,9 @@ public class Storefront {
 
                 /**
                 * The date and time when the product was last modified.
+                * A product's `updatedAt` value can change for different reasons. For example, if an order
+                * is placed for a product that has inventory tracking set up, then the inventory adjustment
+                * is counted as an update.
                 */
 
                 public DateTime getUpdatedAt() {
